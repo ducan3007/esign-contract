@@ -1,0 +1,32 @@
+{
+  "name": "esign-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "test": "mocha",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ducan3007/esign-contract.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ducan3007/esign-contract/issues"
+  },
+  "homepage": "https://github.com/ducan3007/esign-contract#readme",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "ganache": "^7.8.0",
+    "solc": "^0.8.20",
+    "truffle": "^5.10.1",
+    "web": "^0.0.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "jest": "^29.5.0",
+    "mocha": "^10.2.0"
+  }
+}
