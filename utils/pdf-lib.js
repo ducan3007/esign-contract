@@ -18,6 +18,8 @@ const customMetadata = {
   ],
 };
 
+const base64_signature = ''
+
 async function loadPdf() {
   const pdfBytes = fs.readFileSync(process.cwd() + "/upload/" + "4c778cd5-c1d9-4709-9ca6-9106f621ef44.pdf");
   const pdfDoc = await PDFDocument.load(pdfBytes);
