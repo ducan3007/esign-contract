@@ -51,7 +51,7 @@ contract DocumentFactory is Ownable {
 
     // multiple signers
     function signDocument(bytes32 _hash) public {
-        checkHash(_hash);(_hash);
+        checkHash(_hash);
 
         require(documents[_hash].status == DocumentStatus.CREATED, "D405");
 
@@ -83,7 +83,7 @@ contract DocumentFactory is Ownable {
     }
 
     function rejectUnsignedDocument(bytes32 _hash) public onlyOwner {
-        checkHash(_hash);(_hash);
+        checkHash(_hash);
 
         require(documents[_hash].status == DocumentStatus.CREATED, "D405");
 
@@ -113,7 +113,7 @@ contract DocumentFactory is Ownable {
     // function getDocument_test(
     //     bytes32 _hash
     // ) public view returns (uint256 create_at, bytes32 finalized_hash, address creator, DocumentStatus status) {
-    //     checkHash(_hash);(_hash);
+    //     checkHash(_hash);
 
     //     create_at = documents[_hash].create_at;
     //     finalized_hash = documents[_hash].finalized_hash;
@@ -137,7 +137,7 @@ contract DocumentFactory is Ownable {
             Signer[] memory signers
         )
     {
-        checkHash(_hash);(_hash);
+        checkHash(_hash);
 
         create_at = documents[_hash].create_at;
         finalized_hash = documents[_hash].finalized_hash;
@@ -153,7 +153,7 @@ contract DocumentFactory is Ownable {
         return (create_at, finalized_hash, creator, status, signer_count, signers);
     }
 
-    function checkHash(_hash);(bytes32 _hash) public view {
+    function checkHash(bytes32 _hash) public view {
         require(documents[_hash].create_at != 0, "D404");
     }
 }
