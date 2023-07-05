@@ -50,7 +50,7 @@ contract DocumentFactory is Ownable {
     }
 
     // multiple signers
-    function signDocument(bytes32 _hash) public {
+    function signDocument (bytes32 _hash) public {
         checkHash(_hash);
 
         require(documents[_hash].status == DocumentStatus.CREATED, "D405");
