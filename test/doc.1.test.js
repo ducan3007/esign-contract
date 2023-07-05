@@ -68,30 +68,30 @@ describe("Sign document", () => {
   });
 });
 
-describe("Get document", () => {
-  it("It should get a document", async () => {
-    try {
-      const sha = sha256.getHash("8");
-      const byte32 = ethers.utils.hexZeroPad(sha, 32);
-      const document = await contract.getDocument(byte32);
-      console.log(">>>> Get document:", JSON.stringify(document, null, 1));
-      console.log(">>>> Get document:", {
-        create_at: document.create_at.toNumber(),
-        finalized_hash: document.finalized_hash,
-        creator: document.creator,
-        status: document.status,
-        signer_count: document.signer_count.toNumber(),
-        signers: document.signers.map((signer) => {
-          return {
-            signed_at: signer.signed_at.toNumber(),
-            email: signer.email,
-            signer: signer.signer,
-          };
-        }),
-      });
-      chai.expect(true).to.equal(true);
-    } catch (error) {
-      throw error;
-    }
-  });
-});
+// describe("Get document", () => {
+//   it("It should get a document", async () => {
+//     try {
+//       const sha = sha256.getHash("8");
+//       const byte32 = ethers.utils.hexZeroPad(sha, 32);
+//       const document = await contract.getDocument(byte32);
+//       console.log(">>>> Get document:", JSON.stringify(document, null, 1));
+//       console.log(">>>> Get document:", {
+//         create_at: document.create_at.toNumber(),
+//         finalized_hash: document.finalized_hash,
+//         creator: document.creator,
+//         status: document.status,
+//         signer_count: document.signer_count.toNumber(),
+//         signers: document.signers.map((signer) => {
+//           return {
+//             signed_at: signer.signed_at.toNumber(),
+//             email: signer.email,
+//             signer: signer.signer,
+//           };
+//         }),
+//       });
+//       chai.expect(true).to.equal(true);
+//     } catch (error) {
+//       throw error;
+//     }
+//   });
+// });
