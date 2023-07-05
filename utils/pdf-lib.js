@@ -18,34 +18,35 @@ const customMetadata = {
   ],
 };
 
-const base64_signature = ''
+const base64_signature = "";
 
-async function loadPdf() {
+const uuid = randomUUID();
+
+async function readFile() {
   const pdfBytes = fs.readFileSync(process.cwd() + "/upload/" + "4c778cd5-c1d9-4709-9ca6-9106f621ef44.pdf");
   const pdfDoc = await PDFDocument.load(pdfBytes);
   return pdfDoc;
 }
-const uuid = randomUUID();
 
-async function addMetadata() {
+async function addMetadata(pdfDoc, metadata) {
+  pdfDoc.setSubject(JSON.stringify(metadata));
+  return await pdfDoc.save();
+}
+
+async function getMetadata(pdfDoc) {
+  const metadata = pdfDoc.getSubject();
+  console.log("get metadat", JSON.parse(metadata));
+  return JSON.parse(metadata);
+}
+
+async function ipfs() {
+  // save to ipfs
   const pdfBytes = fs.readFileSync(process.cwd() + "/upload/" + "4c778cd5-c1d9-4709-9ca6-9106f621ef44.pdf");
   const pdfDoc = await PDFDocument.load(pdfBytes);
-  pdfDoc.setSubject(JSON.stringify(customMetadata));
-  const pdfBytesWithMetadata = await pdfDoc.save();
-
-  fs.writeFileSync(process.cwd() + "/upload/" + uuid + ".pdf", pdfBytesWithMetadata);
+  
 }
 
-async function getMetadata() {
-  const pdfBytes = fs.readFileSync(process.cwd() + "/upload/" + uuid + ".pdf");
-  const pdfDoc = await PDFDocument.load(pdfBytes);
-  const metadata = pdfDoc.getSubject();
-
-  console.log(JSON.parse(metadata));
-}
-
-async function main() {
-  await addMetadata();
-  await getMetadata();
-}
-main();
+module.exports = {
+  addMetadata,
+  getMetadata,
+};
