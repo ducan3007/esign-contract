@@ -10,14 +10,18 @@ const sha256 = require("../utils/sha256");
 const PRIVATE_KEY = "0x6cbed15c793ce57650b9877cf6fa156fbef513c4e6134f022a85b1ffdd59b2a1";
 const PUBLIC_KEY = "";
 
+const PUBLIC_KEY_S = ethers.utils.computePublicKey(PRIVATE_KEY);
+
 const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
 const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, wallet);
 
+const file = 123
+
 describe("Create document", () => {
   it("It should create a document", async () => {
     try {
-      const sha = sha256.getHash("8");
+      const sha = sha256.getHash(file);
       const address = ethers.utils.computeAddress(PRIVATE_KEY);
 
       const _signers = [
@@ -53,7 +57,7 @@ describe("Create document", () => {
 describe("Sign document", () => {
   it("It should sign a document", async () => {
     try {
-      const sha = sha256.getHash("8");
+      const sha = sha256.getHash(file   );
       const byte32 = ethers.utils.hexZeroPad(sha, 32);
       const contractWithSigner = contract.connect(wallet);
       const tx = await contractWithSigner.signDocument(byte32, {
@@ -71,7 +75,7 @@ describe("Sign document", () => {
 // describe("Get document", () => {
 //   it("It should get a document", async () => {
 //     try {
-//       const sha = sha256.getHash("8");
+//       const sha = sha256.getHash(file  );
 //       const byte32 = ethers.utils.hexZeroPad(sha, 32);
 //       const document = await contract.getDocument(byte32);
 //       console.log(">>>> Get document:", JSON.stringify(document, null, 1));

@@ -16,7 +16,7 @@ async function consumMessage(topic, groupId) {
   await consumer.subscribe({ topic: topic, fromBeginning: true });
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 120));
       console.log({
         partition,
         offset: message.offset,
