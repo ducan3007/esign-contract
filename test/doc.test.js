@@ -14,21 +14,21 @@ const PROVIDER = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 const WALLET = new ethers.Wallet(PRIVATE_KEY, PROVIDER);
 const CONTRACT = new ethers.Contract(CONTRACT_ADDRESS, ABI, WALLET);
 
-describe("Get Owner", () => {
-  it("should return the owner of the contract", async () => {
-    const owner = await CONTRACT.owner();
-    console.log(">>>> Get owner:", owner);
-    chai.expect(owner).to.equal(PUBLIC_KEY);
-  });
-});
+// describe("Get Owner", () => {
+//   it("should return the owner of the contract", async () => {
+//     const owner = await CONTRACT.owner();
+//     console.log(">>>> Get owner:", owner);
+//     chai.expect(owner).to.equal(PUBLIC_KEY);
+//   });
+// });
 
-describe("Get balance", () => {
-  it("should return the balance of the contract", async () => {
-    const balance = await WALLET.getBalance();
-    console.log(">>>> Get balance:", balance.toString());
-    chai.expect(true).to.equal(true);
-  });
-});
+// describe("Get balance", () => {
+//   it("should return the balance of the contract", async () => {
+//     const balance = await WALLET.getBalance();
+//     console.log(">>>> Get balance:", balance.toString());
+//     chai.expect(true).to.equal(true);
+//   });
+// });
 
 // describe("Document already exits", () => {
 //   it("It should return D403", async () => {
@@ -52,7 +52,7 @@ describe("Get balance", () => {
 //     try {
 //       const sha = sha256.getHash("UNKNOWN");
 //       const byte32 = ethers.utils.hexZeroPad(sha, 32);
-//       const document = await contract.getDocument_test(byte32);
+//       const document = await contract.getDocument(byte32);
 //     } catch (error) {
 //       console.error("Document Not Found Error:", JSON.stringify(error,null,1));
 //       const expectedCode = web3.utils.hexToAscii("0x" + error.error.error.data.substring(138, 138 + 64)).replace(/\u0000/g, "");

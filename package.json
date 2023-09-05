@@ -6,8 +6,8 @@
   "test": "mocha",
   "scripts": {
     "test": "mocha",
-    "deploy:1": "node ./deploy/document.js",
-    "deploy:2": "node ./deploy/certificate.js",
+    "deploy:document": "node ./deploy/document.js",
+    "deploy:cert": "node ./deploy/certificate.js",
     "event:1": "node ./event/document.js"
   },
   "repository": {

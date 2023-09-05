@@ -15,7 +15,7 @@ contract DocumentFactory is Ownable {
     struct Signer {
         uint256 signed_at;
         string email;
-        address signer;
+        address signing_address;
     }
 
     struct Document {
@@ -29,9 +29,19 @@ contract DocumentFactory is Ownable {
 
     mapping(bytes32 => Document) public documents;
     mapping(bytes32 => bytes32) public finalized_documents;
+    mapping(string => address[]) public signer_addresses;
 
     event DocumentCreated(bytes32 indexed hash, address indexed creator);
     event DocumentSigned(bytes32 indexed hash, address indexed signer);
+
+    function updateSignerAddresses(string memory _email, address[] memory _addresses) public onlyOwner {
+        require(_addresses.length > 0, "DocumentFactory: Signers must be greater than 0");
+        signer_addresses[_email] = _addresses;
+    }
+
+    function getSignerAddresses(string memory _email) public view returns (address[] memory) {
+        return signer_addresses[_email];
+    }
 
     function createDocument(bytes32 _hash, Signer[] memory _signers) public {
         require(documents[_hash].create_at == 0, "D403");
@@ -50,7 +60,7 @@ contract DocumentFactory is Ownable {
     }
 
     // multiple signers
-    function signDocument (bytes32 _hash) public {
+    function signDocument(bytes32 _hash) public {
         checkHash(_hash);
 
         require(documents[_hash].status == DocumentStatus.CREATED, "D405");
@@ -60,18 +70,17 @@ contract DocumentFactory is Ownable {
         bool is_signed = false;
 
         for (uint i = 0; i < documents[_hash].signer_count; i++) {
-            if (documents[_hash].signers[i].signer == msg.sender) {
-                if (documents[_hash].signers[i].signed_at == 0) {
-                    documents[_hash].signers[i].signed_at = block.timestamp;
-                    is_signer = true;
-                    emit DocumentSigned(_hash, msg.sender);
-                }
-                is_signed = true;
-            }
-
-            if (documents[_hash].signers[i].signed_at == 0) {
-                all_signed = false;
-            }
+            // if (documents[_hash].signers[i].signer == msg.sender) {
+            //     is_signer = true;
+            //     if (documents[_hash].signers[i].signed_at == 0) {
+            //         documents[_hash].signers[i].signed_at = block.timestamp;
+            //         emit DocumentSigned(_hash, msg.sender);
+            //         is_signed = true;
+            //     }
+            // }
+            // if (documents[_hash].signers[i].signed_at == 0) {
+            //     all_signed = false;
+            // }
         }
 
         require(is_signer, "D406");
@@ -82,6 +91,7 @@ contract DocumentFactory is Ownable {
         }
     }
 
+    // Owner Reject Document
     function rejectUnsignedDocument(bytes32 _hash) public onlyOwner {
         checkHash(_hash);
 
