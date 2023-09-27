@@ -35,7 +35,6 @@ contract DocumentFactory is Ownable {
     event DocumentSigned(bytes32 indexed hash, address indexed signer);
 
     function updateSignerAddresses(string memory _email, address[] memory _addresses) public onlyOwner {
-        require(_addresses.length > 0, "DocumentFactory: Signers must be greater than 0");
         signer_addresses[_email] = _addresses;
     }
 
@@ -43,7 +42,7 @@ contract DocumentFactory is Ownable {
         return signer_addresses[_email];
     }
 
-    function createDocument(bytes32 _hash, Signer[] memory _signers) public {
+    function createDocument(bytes32 _hash, Signer[] memory _signers) public onlyOwner {
         require(documents[_hash].create_at == 0, "D403");
         require(_signers.length > 0, "DocumentFactory: Signers must be greater than 0");
 
@@ -60,7 +59,7 @@ contract DocumentFactory is Ownable {
     }
 
     // multiple signers
-    function signDocument(bytes32 _hash) public {
+    function signDocument(bytes32 _hash, string memory _email) public {
         checkHash(_hash);
 
         require(documents[_hash].status == DocumentStatus.CREATED, "D405");
@@ -68,23 +67,37 @@ contract DocumentFactory is Ownable {
         bool all_signed = true;
         bool is_signer = false;
         bool is_signed = false;
+        bool is_address_found = false;
 
         for (uint i = 0; i < documents[_hash].signer_count; i++) {
-            // if (documents[_hash].signers[i].signer == msg.sender) {
-            //     is_signer = true;
-            //     if (documents[_hash].signers[i].signed_at == 0) {
-            //         documents[_hash].signers[i].signed_at = block.timestamp;
-            //         emit DocumentSigned(_hash, msg.sender);
-            //         is_signed = true;
-            //     }
-            // }
-            // if (documents[_hash].signers[i].signed_at == 0) {
-            //     all_signed = false;
-            // }
+            if (documents[_hash].signers[i].signed_at != 0) {
+                continue;
+            }
+            if (keccak256(abi.encodePacked(documents[_hash].signers[i].email)) == keccak256(abi.encodePacked(_email))) {
+                if (signer_addresses[_email].length > 0) {
+                    is_address_found = true;
+                    for (uint j = 0; j < signer_addresses[_email].length; j++) {
+                        if (msg.sender == signer_addresses[_email][j]) {
+                            is_signer = true;
+                            documents[_hash].signers[i].signed_at = block.timestamp;
+                            documents[_hash].signers[i].signing_address = msg.sender;
+                            emit DocumentSigned(_hash, msg.sender);
+                            is_signed = true;
+                        }
+                    }
+                } 
+            }
         }
 
+        require(is_address_found, "D409");
         require(is_signer, "D406");
         require(is_signed, "D407");
+
+        for (uint i = 0; i < documents[_hash].signer_count; i++) {
+            if (documents[_hash].signers[i].signed_at == 0) {
+                all_signed = false;
+            }
+        }
 
         if (all_signed) {
             documents[_hash].status = DocumentStatus.COMPLETED;
@@ -109,29 +122,6 @@ contract DocumentFactory is Ownable {
 
         documents[_hash].status = DocumentStatus.REJECTED;
     }
-
-    // function createDocument_test(bytes32 _hash) public {
-    //     require(documents[_hash].create_at == 0, "D403");
-
-    //     documents[_hash].create_at = block.timestamp;
-    //     documents[_hash].creator = msg.sender;
-    //     documents[_hash].status = DocumentStatus.CREATED;
-
-    //     emit DocumentCreated(_hash, msg.sender);
-    // }
-
-    // function getDocument_test(
-    //     bytes32 _hash
-    // ) public view returns (uint256 create_at, bytes32 finalized_hash, address creator, DocumentStatus status) {
-    //     checkHash(_hash);
-
-    //     create_at = documents[_hash].create_at;
-    //     finalized_hash = documents[_hash].finalized_hash;
-    //     creator = documents[_hash].creator;
-    //     status = documents[_hash].status;
-
-    //     return (create_at, finalized_hash, creator, status);
-    // }
 
     function getDocument(
         bytes32 _hash

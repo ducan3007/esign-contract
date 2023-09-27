@@ -61,16 +61,16 @@ const CONTRACT = new ethers.Contract(CONTRACT_ADDRESS, ABI, WALLET);
 //   });
 // });
 
-// describe("Get document", () => {
-//   it("It should get a document", async () => {
-//     try {
-//       const sha = sha256.getHash("test1");
-//       const byte32 = ethers.utils.hexZeroPad(sha, 32);
-//       const document = await contract.getDocument_test(byte32);
-//       console.log(">>>> Get document:", document);
-//       chai.expect(true).to.equal(true);
-//     } catch (error) {
-//       throw error;
-//     }
-//   });
-// });
+describe("Get document", () => {
+  it("It should get a document", async () => {
+    try {
+      const sha = sha256.getHash("test1");
+      const byte32 = ethers.utils.hexZeroPad(sha, 32);
+      const document = await contract.getDocument_test(byte32);
+      console.log(">>>> Get document:", document);
+      chai.expect(true).to.equal(true);
+    } catch (error) {
+      throw error;
+    }
+  });
+});

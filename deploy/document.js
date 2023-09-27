@@ -1,8 +1,10 @@
 require("dotenv").config();
 const fs = require("fs");
 const solc = require("solc");
-const {ethers} = require("ethers");
+const { ethers } = require("ethers");
+const ipfs = require("ipfs-http-client");
 const path = require("path");
+const redis = require("ioredis");
 
 const cwd = process.cwd();
 const ADDRESS = process.env.ADDRESS || "";
@@ -12,6 +14,19 @@ const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
 console.log({
   ADDRESS,
   PRIVATE_KEY,
+});
+
+const ipfs_client = ipfs.create({
+  host: "0.0.0.0",
+  port: 5001,
+  protocol: "http",
+});
+
+const redis_client = new redis({
+  host: "redis-17563.c252.ap-southeast-1-1.ec2.cloud.redislabs.com",
+  port: 17563,
+  username: "default",
+  password: "oTOCsQP06WgITsUWdpHd9pP93l4twYvX",
 });
 
 async function deployDocumentContract() {
@@ -59,12 +74,19 @@ async function deployDocumentContract() {
     const wallet = new ethers.Wallet(PRIVATE_KEY, provider);
     const factory = new ethers.ContractFactory(contract.abi, contract.bytecode, wallet);
     const { address } = await factory.deploy({
-      gasLimit: 1000000,
+      gasLimit: 10000000,
     });
     contract.address = address;
 
     fs.writeFileSync(cwd + "/build/" + "DocumentFactory.json", JSON.stringify(contract));
     console.log("Contract DocumentFactory deployed to: ", address);
+
+    delete contract.bytecode;
+
+    const fileHash = await ipfs_client.add(JSON.stringify(contract));
+    await redis_client.set("esign:contract:DocumentFactory", fileHash.path);
+
+    console.log("IPFS file hash:", fileHash.path);
   } catch (error) {
     throw error;
   }
