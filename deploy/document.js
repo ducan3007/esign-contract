@@ -81,7 +81,6 @@ async function deployDocumentContract() {
     fs.writeFileSync(cwd + "/build/" + "DocumentFactory.json", JSON.stringify(contract));
     console.log("Contract DocumentFactory deployed to: ", address);
 
-    delete contract.bytecode;
 
     const fileHash = await ipfs_client.add(JSON.stringify(contract));
     await redis_client.set("esign:contract:DocumentFactory", fileHash.path);

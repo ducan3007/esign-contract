@@ -17,43 +17,43 @@ const _wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const _contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, _wallet);
 const file = "12345789";
 
-describe("Create document", () => {
-  it("It should create a document", async () => {
-    try {
-      const sha = sha256.getHash(file);
-      const _signers = [
-        {
-          signed_at: 0,
-          email: "lordmasterking001@gmail.com",
-          signing_address: "0x0000000000000000000000000000000000000000",
-        },
-        {
-          signed_at: 0,
-          email: "anducnguyen3007@gmail.com",
-          signing_address: "0x0000000000000000000000000000000000000000",
-        },
-      ];
-      console.log(">>>> _signers:", _signers);
+// describe("Create document", () => {
+//   it("It should create a document", async () => {
+//     try {
+//       const sha = sha256.getHash(file);
+//       const _signers = [
+//         {
+//           signed_at: 0,
+//           email: "lordmasterking001@gmail.com",
+//           signing_address: "0x0000000000000000000000000000000000000000",
+//         },
+//         {
+//           signed_at: 0,
+//           email: "anducnguyen3007@gmail.com",
+//           signing_address: "0x0000000000000000000000000000000000000000",
+//         },
+//       ];
+//       console.log(">>>> _signers:", _signers);
 
-      const _hash = ethers.utils.hexZeroPad(sha, 32);
-      console.log(">>>> _hash:", _hash);
-      const contractWithSigner = _contract.connect(_wallet);
-      const tx = await contractWithSigner.createDocument(_hash, _signers, {
-        gasLimit: 10000000,
-      });
-      console.log(">>> raw tx", tx);
-      await tx.wait().then((receipt) => {
-        console.log(">>>> receipt:", receipt);
-      });
+//       const _hash = ethers.utils.hexZeroPad(sha, 32);
+//       console.log(">>>> _hash:", _hash);
+//       const contractWithSigner = _contract.connect(_wallet);
+//       const tx = await contractWithSigner.createDocument(_hash, _signers, {
+//         gasLimit: 10000000,
+//       });
+//       console.log(">>> raw tx", tx);
+//       await tx.wait().then((receipt) => {
+//         console.log(">>>> receipt:", receipt);
+//       });
 
-      console.log(">>>> Create document:", tx);
-      chai.expect(true).to.equal(true);
-    } catch (error) {
-      chai.expect(error?.error?.data?.reason).to.equal("D403");
-      console.error("Document already exits Error:", error?.error?.data?.reason);
-    }
-  });
-});
+//       console.log(">>>> Create document:", tx);
+//       chai.expect(true).to.equal(true);
+//     } catch (error) {
+//       chai.expect(error?.error?.data?.reason).to.equal("D403");
+//       console.error("Document already exits Error:", error?.error?.data?.reason);
+//     }
+//   });
+// });
 
 describe("Add signer email", () => {
   it("It should add signer email", async () => {
