@@ -32,7 +32,8 @@ contract DocumentFactory is Ownable {
     mapping(string => address[]) public signer_addresses;
 
     event DocumentCreated(bytes32 indexed hash, address indexed creator);
-    event DocumentSigned(bytes32 indexed hash, address indexed signer);
+    event DocumentSigned(bytes32 indexed hash, address indexed signer, string email);
+    event DocumentCompleted(bytes32 indexed hash);
 
     function updateSignerAddresses(string memory _email, address[] memory _addresses) public onlyOwner {
         signer_addresses[_email] = _addresses;
@@ -73,6 +74,7 @@ contract DocumentFactory is Ownable {
             if (documents[_hash].signers[i].signed_at != 0) {
                 continue;
             }
+
             if (keccak256(abi.encodePacked(documents[_hash].signers[i].email)) == keccak256(abi.encodePacked(_email))) {
                 if (signer_addresses[_email].length > 0) {
                     is_address_found = true;
@@ -81,11 +83,11 @@ contract DocumentFactory is Ownable {
                             is_signer = true;
                             documents[_hash].signers[i].signed_at = block.timestamp;
                             documents[_hash].signers[i].signing_address = msg.sender;
-                            emit DocumentSigned(_hash, msg.sender);
+                            emit DocumentSigned(_hash, msg.sender, _email);
                             is_signed = true;
                         }
                     }
-                } 
+                }
             }
         }
 
@@ -101,6 +103,7 @@ contract DocumentFactory is Ownable {
 
         if (all_signed) {
             documents[_hash].status = DocumentStatus.COMPLETED;
+            emit DocumentCompleted(_hash);
         }
     }
 
@@ -157,3 +160,4 @@ contract DocumentFactory is Ownable {
         require(documents[_hash].create_at != 0, "D404");
     }
 }
+
