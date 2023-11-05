@@ -7,8 +7,9 @@
   "scripts": {
     "test": "mocha",
     "test:cert":"npm run test test/cert.test.js",
-    "deploy:document": "node ./deploy/document.js",
-    "deploy:cert": "node ./deploy/certificate.js",
+    "test:doc":"npm run test test/doc.sign.js",
+    "deploy:1": "node ./deploy/document.js",
+    "deploy:2": "node ./deploy/certificate.js",
     "event:1": "node ./event/document.js"
   },
   "repository": {

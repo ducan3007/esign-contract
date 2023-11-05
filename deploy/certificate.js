@@ -77,12 +77,16 @@ async function deployCertificateContract() {
       gasLimit: 10000000,
     });
     contract.address = address;
+    
 
     fs.writeFileSync(cwd + "/build/" + "CertificateFactory.json", JSON.stringify(contract));
     console.log("Contract CertificateFactory deployed to: ", address);
 
-    // const fileHash = await ipfs_client.add(JSON.stringify(contract));
-    // await redis_client.set("esign:contract:CertificateFactory", fileHash.path);
+
+    delete contract.bytecode;
+
+    const fileHash = await ipfs_client.add(JSON.stringify(contract));
+    await redis_client.set("esign:contract:CertificateFactory", fileHash.path);
 
   } catch (error) {
     throw error;

@@ -9,6 +9,7 @@ contract CertificateFactory is Ownable {
     struct Candidate {
         uint256 issued_at;
         bytes32 cert_hash;
+        address issuer;
         string name;
         string email;
         string status;
@@ -42,6 +43,7 @@ contract CertificateFactory is Ownable {
             name: "",
             email: "",
             cert_hash: 0x0,
+            issuer: 0x0000000000000000000000000000000000000000,
             status: "CREATED",
             expired_at: 0
         });
@@ -56,6 +58,7 @@ contract CertificateFactory is Ownable {
         bool isIssued = false;
         bool found = false;
         uint index = 0;
+        _candidate.issuer = msg.sender;
         for (uint i = 0; i < certs[msg.sender].length; i++) {
             if (certs[msg.sender][i].hash == _hash) {
                 index = i;
@@ -131,72 +134,6 @@ contract CertificateFactory is Ownable {
     function verifyCert(bytes32 _hash) public view returns (Candidate memory) {
         return certificant_to_certhash[_hash];
     }
-
-    // function getCert(bytes32 _hash) public view returns (Cert memory) {
-    //     return certs[_hash];
-    // }
-
-    // function issueCert(bytes32 _hash, Candidate memory _candidate) public onlyOwner {
-    //     checkHash(_hash);
-    //     checkCandidate(_candidate);
-    //     bool already_issued = false;
-
-    //     // check if already issued
-    //     for (uint i = 0; i < certs[_hash].candidates.length; i++) {
-    //         if (keccak256(bytes(certs[_hash].candidates[i].email)) == keccak256(bytes(_candidate.email))) {
-    //             already_issued = true;
-    //             require(
-    //                 keccak256(bytes(certs[_hash].candidates[i].status)) == keccak256(bytes("REVOKED")),
-    //                 "CERT_ALREADY_ISSUED"
-    //             );
-    //             certs[_hash].candidates[i] = _candidate;
-    //         }
-    //     }
-
-    //     if (!already_issued) {
-    //         certs[_hash].candidates.push(_candidate);
-    //         certificant_to_certhash[_candidate.email].push(_hash);
-    //     }
-    //     emit CertificateIssued(_hash, msg.sender);
-    // }
-
-    // function revokeCert(bytes32 _hash, string memory _email) public onlyOwner {
-    //     checkHash(_hash);
-    //     bool found = false;
-    //     for (uint i = 0; i < certs[_hash].candidates.length; i++) {
-    //         if (keccak256(bytes(certs[_hash].candidates[i].email)) == keccak256(bytes(_email))) {
-    //             found = true;
-    //             require(
-    //                 keccak256(bytes(certs[_hash].candidates[i].status)) == keccak256(bytes("ISSUED")),
-    //                 "CERT_ALREADY_REVOKED"
-    //             );
-    //             certs[_hash].candidates[i].status = "REVOKED";
-    //             emit CertificateRevoked(_hash, _email);
-    //         }
-    //     }
-    //     if (!found) {
-    //         revert("CERT_NOT_ISSUED");
-    //     }
-    // }
-
-    // function extendCert(bytes32 _hash, string memory _email, uint256 _expired_at) public onlyOwner {
-    //     checkHash(_hash);
-    //     for (uint i = 0; i < certs[_hash].candidates.length; i++) {
-    //         if (keccak256(bytes(certs[_hash].candidates[i].email)) == keccak256(bytes(_email))) {
-    //             require(
-    //                 keccak256(bytes(certs[_hash].candidates[i].status)) == keccak256(bytes("ISSUED")),
-    //                 "CERT_IS_REVOKED"
-    //             );
-    //             require(_expired_at > certs[_hash].candidates[i].issued_at, "CERT_EXPIRED_AT_MUST_BE_GREATER");
-    //             certs[_hash].candidates[i].expired_at = _expired_at;
-    //             emit CertificateExtended(_hash, _email);
-    //         }
-    //     }
-    // }
-
-    // function checkHash(bytes32 _hash) public view {
-    //     require(certs[_hash].created_at > 0, "CERT_NOT_FOUND");
-    // }
 
     function checkCandidate(Candidate memory _candidate) public pure {
         require(bytes(_candidate.name).length > 0, "CertificateFactory: Name must not be empty");

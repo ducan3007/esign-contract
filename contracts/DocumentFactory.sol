@@ -126,6 +126,12 @@ contract DocumentFactory is Ownable {
         documents[_hash].status = DocumentStatus.REJECTED;
     }
 
+    function finalizeDocument(bytes32 _hash, bytes32 _finalized_hash) public onlyOwner {
+        checkHash(_hash);
+        documents[_hash].finalized_hash = _finalized_hash;
+        finalized_documents[_finalized_hash] = _hash;
+    }
+
     function getDocument(
         bytes32 _hash
     )

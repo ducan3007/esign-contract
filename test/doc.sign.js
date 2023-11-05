@@ -81,7 +81,7 @@ describe("Add signer email", () => {
         gasLimit: 1000000,
       });
       await tx.wait().then((receipt) => {});
-      const signer_address = await contract.getSignerAddresses(email);
+      const signer_address = await contract.getSignerAddresses("lordmasterking001@gmail.com");
       console.log(">>>> signer_address:", signer_address);
     } catch (error) {
       console.error("Add signer error:", JSON.stringify(error, null, 1));
@@ -97,6 +97,7 @@ describe("Sign document", () => {
       let _sha = Buffer.from("639412791161c84c17dfd382338f3080b4c67f860e0db0b1d846723e5fc0fa39", "hex");
 
       let private_key = "0x829e924fdf021ba3dbbc4225edfece9aca04b929d6e75613329ca6f1d31c0bb4";
+      
 
       let wallet = new ethers.Wallet(private_key, provider);
 
