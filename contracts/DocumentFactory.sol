@@ -34,9 +34,11 @@ contract DocumentFactory is Ownable {
     event DocumentCreated(bytes32 indexed hash, address indexed creator);
     event DocumentSigned(bytes32 indexed hash, address indexed signer, string email);
     event DocumentCompleted(bytes32 indexed hash);
+    event SignerAddressesUpdated(string email, address[] signer_address);
 
     function updateSignerAddresses(string memory _email, address[] memory _addresses) public onlyOwner {
         signer_addresses[_email] = _addresses;
+        emit SignerAddressesUpdated(_email, _addresses);
     }
 
     function getSignerAddresses(string memory _email) public view returns (address[] memory) {
